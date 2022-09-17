@@ -75,7 +75,8 @@ async def set(ctx: interactions.CommandContext, tag: str, event: str, starttime:
 @bot.command(
     name="view",
     description="Responds with events under the specified tag.",
-    scope=205384125513859074, # remove after done testing
+    scope=205384125513859074,
+    default_member_permissions=interactions.Permissions.KICK_MEMBERS,
     options = [
         interactions.Option(
             name="tag",
@@ -86,7 +87,6 @@ async def set(ctx: interactions.CommandContext, tag: str, event: str, starttime:
     ],
 )
 async def view(ctx: interactions.CommandContext, tag: str):
-
     # Query tag
     currentTime = time()
     getEvents = ("SELECT name, starttime, endtime FROM events "
@@ -156,5 +156,90 @@ async def remove(ctx: interactions.CommandContext, tag: str, event: str):
         await ctx.send("Event successfully deleted.", ephemeral=True)
     except Exception as err:
         await ctx.send(f"There was an error.\n{err}", ephemeral=True)
+
+# GL events command
+@bot.command(
+    name="glevents",
+    description="View ongoing and upcoming GL events.",
+    scope=205384125513859074
+)
+async def glevents(ctx: interactions.CommandContext):
+    # Query tag
+    getEvents = ("SELECT name, starttime, endtime FROM events "
+                    "WHERE tag=\"glevents\"")
+    db = connect()
+    cursor = db.cursor()
+    cursor.execute(getEvents)
+    msgToSend = ""
+
+    # Formatting results
+    events = cursor.fetchall()
+    currentTime = time()
+    msgToSend = ""
+    ongoing = ""
+    upcoming = ""
+    for event in events:
+        if event[1] < currentTime and event[2] > currentTime:
+            ongoing += "**" + event[0] + "** <t:" + str(event[2]) + ":F> **(Ends <t:" + str(event[2]) + ":R>)**\n"
+
+    for event in events:
+        if event[1] > currentTime:
+            upcoming += "**" + event[0] + "** <t:" + str(event[1]) + ":F> **(Begins <t:" + str(event[1]) + ":R>)**\n"
+    if ongoing and upcoming:
+        msgToSend += "__**Ongoing Events**__\n"
+        msgToSend += ongoing
+        msgToSend += "\n__**Upcoming Events**__\n"
+        msgToSend += upcoming
+    elif ongoing:
+        msgToSend += "__**Ongoing Events**__\n"
+        msgToSend += ongoing
+    elif upcoming:
+        msgToSend += "\n__**Upcoming Events**__\n"
+        msgToSend += upcoming
+    else:
+        msgToSend += "No events found under this tag."
+    await ctx.send(msgToSend)
+
+# JP events command
+@bot.command(
+    name="jpevents",
+    description="View ongoing and upcoming JP events.",
+    scope=205384125513859074
+)
+async def jpevents(ctx: interactions.CommandContext):
+    # Query tag
+    getEvents = ("SELECT name, starttime, endtime FROM events WHERE tag ='jpevents'")
+    db = connect()
+    cursor = db.cursor()
+    cursor.execute(getEvents)
+    msgToSend = ""
+
+    # Formatting results
+    events = cursor.fetchall()
+    currentTime = time()
+    msgToSend = ""
+    ongoing = ""
+    upcoming = ""
+    for event in events:
+        if event[1] < currentTime and event[2] > currentTime:
+            ongoing += "**" + event[0] + "** <t:" + str(event[2]) + ":F> **(Ends <t:" + str(event[2]) + ":R>)**\n"
+
+    for event in events:
+        if event[1] > currentTime:
+            upcoming += "**" + event[0] + "** <t:" + str(event[1]) + ":F> **(Begins <t:" + str(event[1]) + ":R>)**\n"
+    if ongoing and upcoming:
+        msgToSend += "__**Ongoing Events**__\n"
+        msgToSend += ongoing
+        msgToSend += "\n__**Upcoming Events**__\n"
+        msgToSend += upcoming
+    elif ongoing:
+        msgToSend += "__**Ongoing Events**__\n"
+        msgToSend += ongoing
+    elif upcoming:
+        msgToSend += "\n__**Upcoming Events**__\n"
+        msgToSend += upcoming
+    else:
+        msgToSend += "No events found under this tag."
+    await ctx.send(msgToSend)
 
 bot.start()
