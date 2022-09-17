@@ -103,11 +103,11 @@ async def view(ctx: interactions.CommandContext, tag: str):
     upcoming = ""
     for event in events:
         if event[1] < currentTime and event[2] > currentTime:
-            ongoing += "**" + event[0] + "** <t:" + str(event[2]) + ":F> **(<t:" + str(event[2]) + ":R>)**\n"
+            ongoing += "**" + event[0] + "** <t:" + str(event[2]) + ":F> **(Ends <t:" + str(event[2]) + ":R>)**\n"
 
     for event in events:
         if event[1] > currentTime:
-            upcoming += "**" + event[0] + "** <t:" + str(event[1]) + ":R>\n"
+            upcoming += "**" + event[0] + "** <t:" + str(event[1]) + ":F> **(Begins <t:" + str(event[1]) + ":R>)**\n"
     if ongoing and upcoming:
         msgToSend += "__**Ongoing Events**__\n"
         msgToSend += ongoing
