@@ -13,15 +13,6 @@ def connect():
         )
     return db
 
-TABLES = {}
-TABLES['events'] = (
-    "CREATE TABLE 'events' ("
-    "'id' int PRIMARY KEY UNIQUE AUTO_INCREMENT,"
-    "'tag' varchar NOT NULL,"
-    "'starttime' int(11) NOT NULL,"
-    "'endtime' int(11) NOT NULL"
-)
-
 bot = interactions.Client(token=config('discordtoken'))
 
 # Set command
@@ -208,7 +199,7 @@ async def glevents(ctx: interactions.CommandContext):
 )
 async def jpevents(ctx: interactions.CommandContext):
     # Query tag
-    getEvents = ("SELECT name, starttime, endtime FROM events WHERE tag ='jpevents'")
+    getEvents = ("SELECT name, starttime, endtime FROM events WHERE tag='jpevents'")
     db = connect()
     cursor = db.cursor()
     cursor.execute(getEvents)
