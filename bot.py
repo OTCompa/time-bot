@@ -237,9 +237,7 @@ async def on_ready():
     await bot.change_presence(
         interactions.ClientPresence(
             activities = [interactions.PresenceActivity(
-                name="test1",
-                details="test2",
-                state="test3",
+                name="/glevents | /jpevents",
                 type=interactions.PresenceActivityType.GAME
             )]
         )
