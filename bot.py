@@ -1,7 +1,6 @@
-# This example requires the 'message_content' intent.
 from time import time
-import interactions
 from decouple import config
+import interactions
 import mysql.connector
 
 def connect():
@@ -232,5 +231,19 @@ async def jpevents(ctx: interactions.CommandContext):
     else:
         msgToSend += "No events found under this tag."
     await ctx.send(msgToSend)
+
+@bot.event
+async def on_ready():
+    await bot.change_presence(
+        interactions.ClientPresence(
+            activities = [interactions.PresenceActivity(
+                name="test1",
+                details="test2",
+                state="test3",
+                type=interactions.PresenceActivityType.GAME
+            )]
+        )
+    )
+    print("Bot is ready")
 
 bot.start()
